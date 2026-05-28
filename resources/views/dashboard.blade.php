@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -264,7 +265,6 @@
             flex-shrink: 0;
         }
 
-        /* Transaction List Styling (Same as transaksi page) */
         .transaction-list {
             display: flex;
             flex-direction: column;
@@ -301,7 +301,7 @@
 
         .transaction-item {
             display: grid;
-            grid-template-columns: 80px 160px 1fr auto;
+            grid-template-columns: 80px 280px 1fr auto;
             align-items: center;
             padding: 20px 24px;
             border-bottom: 1px solid #E5E7EB;
@@ -318,10 +318,31 @@
             font-weight: 600;
         }
 
-        .transaction-type {
+        .transaction-info {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .transaction-title {
             font-size: 15px;
             color: var(--color-navy);
-            font-weight: 500;
+            font-weight: 600;
+            width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .transaction-badge {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-navy);
+            background-color: rgba(0, 34, 68, 0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: capitalize;
         }
 
         .transaction-desc {
@@ -347,6 +368,7 @@
             .charts-container {
                 grid-template-columns: 1fr;
             }
+
             .transaction-item {
                 grid-template-columns: 70px 120px 1fr auto;
             }
@@ -363,20 +385,20 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
             }
-            
+
             .transaction-time {
                 order: 1;
             }
-            
+
             .transaction-amount {
                 order: 2;
                 text-align: right;
             }
-            
+
             .transaction-type {
                 order: 3;
             }
-            
+
             .transaction-desc {
                 order: 4;
                 text-align: right;
@@ -387,6 +409,7 @@
             body {
                 flex-direction: column;
             }
+
             .sidebar {
                 width: 100%;
                 min-height: auto;
@@ -394,6 +417,7 @@
         }
     </style>
 </head>
+
 <body>
     <aside class="sidebar">
         <div class="sidebar-logo">
@@ -401,7 +425,8 @@
         </div>
 
         <div class="profile">
-            <img src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : asset('assets/icon-profil.png') }}" alt="Foto Profil" class="profile-pic">
+            <img src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : asset('assets/icon-profil.png') }}"
+                alt="Foto Profil" class="profile-pic">
             <div class="profile-name">Selamat Datang,<br>{{ auth()->user()->nama_lengkap }}</div>
         </div>
 
@@ -429,11 +454,14 @@
         <div class="nav-logout">
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
-                <button type="submit" style="background: none; border: none; color: var(--color-white); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 16px; padding: 12px 8px; border-radius: 6px; transition: background-color 0.2s; width: 100%;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
+                <button type="submit"
+                    style="background: none; border: none; color: var(--color-white); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 16px; padding: 12px 8px; border-radius: 6px; transition: background-color 0.2s; width: 100%;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
                     </svg>
                     <span>Logout</span>
                 </button>
@@ -497,8 +525,8 @@
                 @forelse($groupedLatestTransaksis as $date => $transactions)
                     @php
                         $dailyTotal = 0;
-                        foreach($transactions as $t) {
-                            if($t->tipe == 'pemasukan') {
+                        foreach ($transactions as $t) {
+                            if ($t->tipe == 'pemasukan') {
                                 $dailyTotal += $t->nominal;
                             } else {
                                 $dailyTotal -= $t->nominal;
@@ -507,22 +535,30 @@
                     @endphp
                     <div class="transaction-group">
                         <div class="transaction-group-header">
-                            <span class="transaction-date">{{ $date }}</span>
-                            <span class="transaction-total">Total Rp{{ number_format(abs($dailyTotal), 0, ',', '.') }}</span>
+                            <span
+                                class="transaction-date">{{ \Carbon\Carbon::createFromFormat('d-m-Y', $date)->locale('id')->translatedFormat('l, d-m-Y') }}</span>
+                            <span class="transaction-total">Total
+                                Rp{{ number_format(abs($dailyTotal), 0, ',', '.') }}</span>
                         </div>
-                        @foreach($transactions as $transaksi)
+                        @foreach ($transactions as $transaksi)
                             <div class="transaction-item">
-                                <span class="transaction-time">{{ \Carbon\Carbon::parse($transaksi->waktu_transaksi)->format('H:i') }}</span>
-                                <span class="transaction-type">{{ $transaksi->kategori }}</span>
+                                <span
+                                    class="transaction-time">{{ \Carbon\Carbon::parse($transaksi->waktu_transaksi)->format('H:i') }}</span>
+                                <div class="transaction-info">
+                                    <span class="transaction-title">{{ $transaksi->nama_transaksi }}</span>
+                                    <span class="transaction-badge">{{ $transaksi->kategori }}</span>
+                                </div>
                                 <span class="transaction-desc">{{ $transaksi->catatan ?? '-' }}</span>
-                                <span class="transaction-amount {{ $transaksi->tipe == 'pengeluaran' ? 'expense' : 'income' }}">
+                                <span
+                                    class="transaction-amount {{ $transaksi->tipe == 'pengeluaran' ? 'expense' : 'income' }}">
                                     Rp{{ number_format($transaksi->nominal, 0, ',', '.') }}
                                 </span>
                             </div>
                         @endforeach
                     </div>
                 @empty
-                    <div style="text-align: center; padding: 40px; color: #6B7280; border: 2px solid var(--color-navy); border-radius: 12px; background: #fff;">
+                    <div
+                        style="text-align: center; padding: 40px; color: #6B7280; border: 2px solid var(--color-navy); border-radius: 12px; background: #fff;">
                         Belum ada transaksi
                     </div>
                 @endforelse
@@ -530,64 +566,58 @@
         </main>
     </div>
 
-    <!-- Load Chart.js and DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    
+
     <script>
-        // Define color palette matching user mock and general clean design
         const colors = [
-            '#00E532', // Green (Judi / Menang Judi)
-            '#FFC107', // Yellow (Kos-kosan / Curian)
-            '#FF3B30', // Red (Makan)
-            '#2196F3', // Blue (Tagihan / Gaji)
-            '#AF52DE', // Purple
-            '#FF9500', // Orange
-            '#5AC8FA', // Light Blue
-            '#E91E63', // Pink
-            '#009688', // Teal
-            '#795548'  // Brown
+            '#00E532',
+            '#FFC107',
+            '#FF3B30',
+            '#2196F3',
+            '#AF52DE',
+            '#FF9500',
+            '#5AC8FA',
+            '#E91E63',
+            '#009688',
+            '#795548'
         ];
 
-        // Register the datalabels plugin globally
         Chart.register(ChartDataLabels);
 
-        // Dynamic Legend Generator
         function generateLegend(containerId, data, colors) {
             const legendContainer = document.getElementById(containerId);
             legendContainer.innerHTML = '';
-            
+
             data.forEach((item, index) => {
                 const color = colors[index % colors.length];
-                
+
                 const legendItem = document.createElement('div');
                 legendItem.className = 'legend-item';
-                
+
                 const colorBox = document.createElement('span');
                 colorBox.className = 'legend-color';
                 colorBox.style.backgroundColor = color;
-                
+
                 const labelText = document.createElement('span');
                 labelText.textContent = item.kategori;
-                
+
                 legendItem.appendChild(colorBox);
                 legendItem.appendChild(labelText);
                 legendContainer.appendChild(legendItem);
             });
         }
 
-        // Fetch data encoded from Controller
         const pengeluaranData = @json($pengeluaranKategori);
         const pemasukanData = @json($pemasukanKategori);
 
-        // Render Pengeluaran (Expense) Chart
         if (pengeluaranData.length === 0) {
             document.getElementById('pengeluaranChart').style.display = 'none';
             document.getElementById('pengeluaranEmpty').style.display = 'block';
         } else {
             const labels = pengeluaranData.map(item => item.kategori);
             const totals = pengeluaranData.map(item => parseFloat(item.total));
-            
+
             const ctx = document.getElementById('pengeluaranChart').getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
@@ -637,18 +667,17 @@
                     }
                 }
             });
-            
+
             generateLegend('pengeluaranLegend', pengeluaranData, colors);
         }
 
-        // Render Pemasukan (Income) Chart
         if (pemasukanData.length === 0) {
             document.getElementById('pemasukanChart').style.display = 'none';
             document.getElementById('pemasukanEmpty').style.display = 'block';
         } else {
             const labels = pemasukanData.map(item => item.kategori);
             const totals = pemasukanData.map(item => parseFloat(item.total));
-            
+
             const ctx = document.getElementById('pemasukanChart').getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
@@ -698,9 +727,10 @@
                     }
                 }
             });
-            
+
             generateLegend('pemasukanLegend', pemasukanData, colors);
         }
     </script>
 </body>
+
 </html>

@@ -9,6 +9,8 @@ class Transaksi extends Model
     protected $table = 'transaksis';
 
     protected $fillable = [
+        'user_id',
+        'nama_transaksi',
         'tipe',
         'nominal',
         'kategori',
@@ -20,4 +22,8 @@ class Transaksi extends Model
         'nominal' => 'decimal:2',
         'waktu_transaksi' => 'datetime',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

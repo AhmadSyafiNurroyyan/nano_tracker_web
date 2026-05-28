@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 class TransaksiController extends Controller
 {
     public function index()
     {
-        $pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
-        $pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+        $userId = auth()->id();
+        $pemasukan = Transaksi::where('user_id', $userId)->where('tipe', 'pemasukan')->sum('nominal');
+        $pengeluaran = Transaksi::where('user_id', $userId)->where('tipe', 'pengeluaran')->sum('nominal');
         $total = $pemasukan - $pengeluaran;
-        $transaksis = Transaksi::orderBy('waktu_transaksi', 'desc')->get();
+        $transaksis = Transaksi::where('user_id', $userId)->orderBy('waktu_transaksi', 'desc')->get();
 
-        $groupedTransaksis = $transaksis->groupBy(function($item) {
+        $groupedTransaksis = $transaksis->groupBy(function ($item) {
             return \Carbon\Carbon::parse($item->waktu_transaksi)->format('d-m-Y');
         });
 
@@ -24,14 +26,17 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'nama_transaksi' => 'required|string|max:25',
             'tipe' => 'required|in:pemasukan,pengeluaran',
             'nominal' => 'required|numeric|min:0',
-            'kategori' => 'required|string|max:30',
+            'kategori' => 'required|string|max:25',
             'waktu_transaksi' => 'required|date',
             'catatan' => 'nullable|string|max:50'
         ]);
 
         Transaksi::create([
+            'user_id' => auth()->id(),
+            'nama_transaksi' => $validated['nama_transaksi'],
             'tipe' => $validated['tipe'],
             'nominal' => $validated['nominal'],
             'kategori' => $validated['kategori'],
@@ -40,5 +45,42 @@ class TransaksiController extends Controller
         ]);
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan!');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate(
+            [
+                'nama_transaksi' => 'required|string|max:25',
+                'tipe' => 'required|in:pemasukan,pengeluaran',
+                'nominal' => 'required|numeric|min:0',
+                'kategori' => 'required|string|max:25',
+                'waktu_transaksi' => 'required|date',
+                'catatan' => 'nullable|string|max:50'
+            ]
+        );
+
+        $transaksi = Transaksi::where('user_id', auth()->id())->findOrFail($id);
+
+        $transaksi->update(
+            [
+                'nama_transaksi' => $validated['nama_transaksi'],
+                'tipe' => $validated['tipe'],
+                'nominal' => $validated['nominal'],
+                'kategori' => $validated['kategori'],
+                'waktu_transaksi' => $validated['waktu_transaksi'],
+                'catatan' => $validated['catatan'] ?? null
+            ]
+        );
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = Transaksi::where('user_id', auth()->id())->findOrFail($id);
+        $transaksi->delete();
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus!');
     }
 }

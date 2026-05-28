@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #002244;
@@ -18,17 +20,35 @@
 
         .top-bar {
             width: 100%;
-            height: 60px;
-            background-color: #F8F9FA;
+            padding: 20px 30px;
+            background-color: transparent;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            padding-left: 30px;
+            justify-content: space-between;
         }
 
-        .top-bar img {
-            height: 50px;
+        .logo-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 45px;
             width: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .back-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
         }
 
         .page-wrapper {
@@ -48,6 +68,7 @@
             max-width: 420px;
             padding: 40px 35px;
         }
+
         .register-card h1 {
             color: #002244;
             font-size: 28px;
@@ -56,15 +77,18 @@
             margin-bottom: 30px;
             letter-spacing: 0.5px;
         }
+
         form {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+
         .form-group {
             display: flex;
             flex-direction: column;
         }
+
         label {
             color: #002244;
             font-size: 13px;
@@ -72,6 +96,7 @@
             margin-bottom: 6px;
             display: block;
         }
+
         input {
             width: 100%;
             padding: 10px 14px;
@@ -82,9 +107,11 @@
             color: #002244;
             outline: none;
         }
+
         input:focus {
             box-shadow: 0 0 0 2px #002244;
         }
+
         .btn-daftar {
             display: block;
             margin: 18px auto 0;
@@ -98,6 +125,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .btn-daftar:hover {
             background-color: #ffffff;
         }
@@ -108,6 +136,7 @@
             gap: 10px;
             margin: 22px 0 16px;
         }
+
         .separator::before,
         .separator::after {
             content: "";
@@ -116,6 +145,7 @@
             background-color: #002244;
             opacity: 0.6;
         }
+
         .separator span {
             color: #002244;
             font-size: 13px;
@@ -140,34 +170,48 @@
             text-decoration: none;
             transition: background 0.2s;
         }
+
         .google-btn:hover {
             background-color: #ffffff;
         }
+
         .google-btn svg {
             width: 18px;
             height: 18px;
         }
 
-        .login-link {
+        .auth-switch-text {
             text-align: center;
-            margin-top: 18px;
-            color: #002244;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-navy);
+            margin-top: 16px;
         }
-        .login-link a {
+
+        .auth-switch-text a {
             color: #22c55e;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 700;
+            margin-left: 4px;
+            transition: color 0.2s ease;
         }
-        .login-link a:hover {
+
+        .auth-switch-text a:hover {
+            color: #15803d;
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
-    <div class="top-bar">
-        <img src="{{ asset('assets/logo.png') }}" alt="Nano Tracker Logo">
-    </div>
+    <header class="top-bar">
+        <a href="{{ route('home_page') }}" class="logo-link">
+            <img src="{{ asset('assets/logo.png') }}" alt="Nano Tracker Logo" class="logo">
+        </a>
+        <a href="{{ route('home_page') }}" class="back-link">
+            &larr; Kembali ke Beranda
+        </a>
+    </header>
 
     <div class="page-wrapper">
         <div class="register-card">
@@ -204,10 +248,11 @@
                 Daftar dengan google
             </a>
 
-            <p class="login-link">
+            <p class="auth-switch-text">
                 Sudah punya akun? <a href="{{ route('login') }}">Login Sekarang</a>
             </p>
         </div>
     </div>
 </body>
+
 </html>

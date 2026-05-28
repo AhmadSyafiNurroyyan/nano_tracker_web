@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomePage</title>
-     <style>
+    <title>Beranda</title>
+    <style>
         :root {
             --color-top-bar: #D9D9D9;
             --color-bg: #FFFFFF;
@@ -26,14 +27,17 @@
         }
 
         .top-bar {
-            background-color: var(--color-top-bar);
+            background-color: #FFFFFF;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             width: 100%;
-            padding: 16px 48px;
+            padding: 20px 30px;
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            padding-left: 30px;
-            }
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
         .top-bar-inner {
             max-width: 1280px;
@@ -43,8 +47,13 @@
             justify-content: flex-start;
         }
 
+        .logo-link {
+            display: flex;
+            align-items: center;
+        }
+
         .logo {
-            height: 50px;
+            height: 45px;
             width: auto;
         }
 
@@ -82,6 +91,12 @@
             margin-bottom: 48px;
         }
 
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
         .btn-cta {
             display: inline-block;
             background-color: var(--color-navy);
@@ -96,6 +111,24 @@
 
         .btn-cta:hover {
             opacity: 0.9;
+        }
+
+        .btn-cta-secondary {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--color-navy);
+            border: 2px solid var(--color-navy);
+            padding: 14px 34px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-secondary:hover {
+            background-color: var(--color-navy);
+            color: #D9D9D9;
         }
 
         .hero-image {
@@ -156,9 +189,12 @@
         }
     </style>
 </head>
+
 <body>
     <header class="top-bar">
-        <img src="{{ asset('assets/logo.png') }}" alt="Nano Tracker Logo" class="logo">
+        <a href="{{ route('home_page') }}" class="logo-link">
+            <img src="{{ asset('assets/logo.png') }}" alt="Nano Tracker Logo" class="logo">
+        </a>
     </header>
 
     <main class="main-content">
@@ -175,6 +211,9 @@
                 </p>
                 <a href="{{ route('register') }}" class="btn-cta">
                     Buat Akun Sekarang!
+                </a>
+                <a href="{{ route('login') }}" class="btn-cta-secondary">
+                    Masuk
                 </a>
             </div>
 
@@ -210,4 +249,5 @@
         </section>
     </main>
 </body>
+
 </html>
